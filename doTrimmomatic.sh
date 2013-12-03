@@ -14,7 +14,7 @@
 # Date: 3 December 2013
 
 # To-Do:
-# - make adapter file an command line argument
+# - make adapter file a command line argument
 # - check if trimmomatic is installed
 # - check command line arguments
 
