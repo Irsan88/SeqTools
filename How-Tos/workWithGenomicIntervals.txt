@@ -1,10 +1,10 @@
-# This tutorials mainly focuses on how to use \
+# This tutorials mainly focuses on how to use
 # BEDOPS and BEDtools to perform various kinds of
 # operations on genomic intervals
 
 #############################################################
 #
-# Collapse feaetures in one are more bed-files
+# Collapse features in one are more bed-files
 #
 #############################################################
 
