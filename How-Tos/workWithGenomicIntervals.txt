@@ -4,7 +4,7 @@
 
 #############################################################
 #
-# Collapse feaetures in one are more bed-files
+# Collapse features in one are more bed-files
 #
 #############################################################
 
