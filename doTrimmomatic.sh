@@ -1,19 +1,24 @@
 #!/bin/bash
 
-# usage: ./doTrimmomatic.sh /path/to/input/directory /path/to/output/directory
+# Usage: ./doTrimmomatic.sh /path/to/input/directory /path/to/output/directory
 
 # prerequisites: 
-# -	make sure all R1 and R2 files of each sample are in provided input dir
-# -	the _ character is used to separte sample name from the file name prefix
+#	-	make sure all R1 and R2 files of each sample are in provided input dir
+#	-	the _ character is used to separte sample name from the file name prefix
 #		e.g. VU834-10M_ATCGT_R1.fastq.gz will have sample name VU834-10M
-# -	make sure provided output directory exists
+#	-	make sure provided output directory exists
 #	-	trimmomatic.jar file should be in /home/irsan/programs/Trimmomatic/Trimmomatic-0.22/trimmomatic-0.22.jar
-# -	file with adapters should be in /home/irsan/references/adapters/TruSeq_RNA.fa
+#	-	file with adapters should be in /home/irsan/references/adapters/TruSeq_RNA.fa
 
 # Author: E.I. Kooi
 # Date: 3 December 2013
 
-# fetch command line arguments
+# To-Do:
+#	- make adapter file an command line argument
+# - check if trimmomatic is installed
+# - check command line arguments
+
+# Fetch command line arguments
 inputDir=$1
 outputDir=$2
 
