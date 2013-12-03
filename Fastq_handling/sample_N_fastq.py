@@ -1,3 +1,5 @@
+# Usage: python sample_N_fastq_py forward.fastq reverse.fastq 20000
+
 import random
 import sys
 
