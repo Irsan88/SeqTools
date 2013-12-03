@@ -1,0 +1,25 @@
+# This tutorials mainly focuses on how to use \
+# BEDOPS and BEDtools to perform various kinds of
+# operations on genomic intervals
+
+#############################################################
+#
+# Collapse feaetures in one are more bed-files
+#
+#############################################################
+
+# For example, you want to get a bed file containing all
+# coding sequences reported in RefSeq transcript annotations
+
+# Download transcript annotation:
+wget ftp://ftp.ensembl.org/pub/release-73/gtf/homo_sapiens/Homo_sapiens.GRCh37.73.gtf.gz
+gunzip Homo_sapiens.GRCh37.73.gtf.gz
+
+# only keep CDS
+awk -F "\t" '{if($3=="CDS")print $0}' Homo_sapiens.GRCh37.73.gtf | \
+# then convert gtf2bed with script from BEDOPS
+gtf2bed - |
+# now you can merge the features with bedops
+bedops --merge - > Homo_sapiens.GRCh37_CDS_reduced.bed
+# you can use this file to do quality control for exome sequencing
+
