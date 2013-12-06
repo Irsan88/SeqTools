@@ -13,6 +13,7 @@
 inputDir=$1
 outputDir='./FastQC_PDFs'
 
+mkdir $outputDir
 for f in $(ls $inputDir)
 do
 	htmldoc \
