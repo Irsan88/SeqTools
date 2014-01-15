@@ -1,5 +1,9 @@
 #!/usr/bin/Rscript
 
+# check dependencies
+require(ggplot2)
+require(reshape)
+
 # Get command line arguments
 # maybe change for getopt
 args<-commandArgs(TRUE)
@@ -54,8 +58,6 @@ lrr <- cbind(counts[good.windows,1:4],lrr)
 
 # reshape the data so that you can plot
 # with famous ggplot2
-library(reshape)
-library(ggplot2)
 lrr <- melt(lrr,id.vars=colnames(lrr)[1:4])
 colnames(lrr)[5:6] <- c("sample","lrr")
 # apply min and max values
