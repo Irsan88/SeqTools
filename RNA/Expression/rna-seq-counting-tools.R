@@ -1,0 +1,68 @@
+# convert counted fragments to FPKM
+countsToFpkm <- function(x,gene.sizes){
+	if(missing(gene.sizes)){
+		stop("Please use argument gene.sizes=")
+	}
+	# divide by gene size in kbs
+	gene.sizes <- gene.sizes / 1e3
+	x <- x[names(gene.sizes),]
+	x <- x / gene.sizes
+	x <- na.omit(x)
+	# calculate amount of fragments per sample in millions
+	lib.sizes <- apply(x,2,sum) / 1e6
+	# divide by library size
+	x <- t(t(x) / lib.sizes)
+	return(x)
+}
+
+# convert FPKM to log-transformed FPKM
+logFpkm <- function(x,base=10){
+	# remove genes with missing FPKM	
+	x <- na.omit(x)
+	# remove genes that have 0 FPKM in all samples
+	keep <- which(apply(x,1,sum)>0)
+	x <- x[keep,]
+	# offset all values by small number
+	# so that 0's don't exist any more.
+	# Otherwise, log-transform will give errors
+	offset <- min(x[x>0]) / 10
+	x <- x + offset
+	x <- log(x,base=base)
+	return(x)
+}
+
+# make a 3d plot from a prcomp-object
+plotPCA <- function(x,scale=TRUE,boxAngle=45,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){
+	stopifnot(class(x)=="prcomp")
+	pca <- x
+	if(missing(colors)){
+		colors <- rep("black",nrow(pca$x))
+	}	
+	require(scatterplot3d)
+	scatter <- scatterplot3d(
+		pca$x[,1:3],	
+		angle=boxAngle,
+		color = colors,
+		...
+	)
+	text(
+		scatter$xyz.convert(pca$x[,1], pca$x[,2], pca$x[,3]), 
+		labels=rownames(pca$x),
+		pos = labelOffset,
+		srt = labelAngle,
+		cex = labelCex,
+		col = colors
+	) 		
+	return(scatter)
+}
+
+# get the N most variable genes
+getMostVar <- function(x,n=250){
+	# calculate std dev for all genes
+	sds <- apply(x,1,sd)
+	# sort descending
+	sds <- sds[order(sds,decreasing=T)]
+	# get the names of the N most variable genes
+	most.var.genes <- names(sds)[1:n]
+}
+

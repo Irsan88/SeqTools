@@ -1,0 +1,16 @@
+This repository is made by Irsan Kooi and is free to use.
+It includes useful tools/wrappers/how-to's to get things done
+with DNA and RNA sequencing.
+
+Topics that are currently included:
+
+- Identifying low covered regions in DNA-sequencing
+- Doing copy number and LOH analysis on DNA-sequencing
+- Clustering and PCA analysis on expression matrices
+
+Topics that will be included in the future
+
+- Vizualiation of genomic data (karyogram, zoom-in genes,
+lolly-plot, ...)
+- Quality control DNA/RNA sequencing after mapping
+
