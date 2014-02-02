@@ -57,9 +57,9 @@ plotPCA <- function(x,scale=TRUE,boxAngle=45,labelOffset=3,labelAngle=45,labelCe
 }
 
 # get the N most variable genes
-getMostVar <- function(x,n=250){
+getMostVar <- function(x,n=250,stat=sd){
 	# calculate std dev for all genes
-	sds <- apply(x,1,sd)
+	sds <- apply(x,1,stat)
 	# sort descending
 	sds <- sds[order(sds,decreasing=T)]
 	# get the names of the N most variable genes
