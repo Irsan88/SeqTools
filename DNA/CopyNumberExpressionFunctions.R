@@ -461,7 +461,7 @@ distBinary <- function(x) dist(x,method = 'binary')
 distMinkowski <- function(x) dist(x,method = 'minkowski')
 
 
-rna.clustering <- function(x,scale="row",col=colorRampPalette(c("green2","green","green","black","red","red","red2"))(100),column.colors,row.colors,labRow=F,...){
+rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=colorRampPalette(c("green2","green","green","black","red","red","red2"))(100),column.colors,row.colors,labRow=F,...){
 	require(affy)
 	require(RColorBrewer)
 	require(gplots)
@@ -472,6 +472,8 @@ rna.clustering <- function(x,scale="row",col=colorRampPalette(c("green2","green"
 			col = col,
 			labRow = labRow,
 			scale=scale,
+      hclustfun = hc,
+      distfun = dist,
 			...
 		)
 	} else if(!missing(column.colors) & missing(row.colors)) {
@@ -481,6 +483,8 @@ rna.clustering <- function(x,scale="row",col=colorRampPalette(c("green2","green"
 			labRow = labRow,
 			ColSideColors = column.colors,
 			scale=scale,
+			hclustfun = hc,
+			distfun = dist,
 			...
 		)
 	} else if(missing(column.colors) & !missing(row.colors)) {
@@ -490,6 +494,8 @@ rna.clustering <- function(x,scale="row",col=colorRampPalette(c("green2","green"
 			labRow = labRow,
 			RowSideColors = row.colors,
 			scale=scale,
+			hclustfun = hc,
+			distfun = dist,
 			...
 		)
 	} 
@@ -501,6 +507,8 @@ rna.clustering <- function(x,scale="row",col=colorRampPalette(c("green2","green"
 			ColSideColors = column.colors,
 			RowSideColors = row.colors,
 			scale=scale,
+			hclustfun = hc,
+			distfun = dist,
 			...
 		)
 	} else {
@@ -551,7 +559,7 @@ numericToColors <- function(x,na.color="grey"){
 }
 
 # jitter plot of individual genes
-plotProbes <- function(eset,group=NULL){
+plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL){
 	require(ggplot2)
 	require(reshape)
 	require(affy)
@@ -571,13 +579,13 @@ plotProbes <- function(eset,group=NULL){
 	d$symbol <- fData(eset)[as.character(d$probe),2]
 	plot <- ggplot(d) + 
 		geom_jitter(aes(x=group,y=expression,color=group),position=position_jitter(width=0.1)) + 
-		facet_wrap(~probe+symbol,scales="free_y") +
+		facet_wrap(~probe+symbol,scales=scales,nrow=rows) +
 		scale_color_brewer(type="qual",palette="Set1") +
 		theme(legend.position="none")
 	return(plot)
 }
 
-dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.colors,...){
+dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.colors,labRow=F,...){
 	require(RColorBrewer)
 	if(missing(column.colors)){	
 		h <- heatmap.3(
@@ -586,9 +594,10 @@ dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.color
 			Rowv = F,
 			Colv = col,
 			keysize=1,
-			labRow=F,
+			labRow=labRow,
 			distfun=dist,
 			hclust=clust,
+      dendrogram="column",
 			...
 		)
 	} else {
@@ -598,9 +607,10 @@ dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.color
 			Rowv = F,
 			Colv = col,
 			keysize=1,
-			labRow=F,
+			labRow=labRow,
 			distfun=dist,
 			hclust=clust,
+      dendrogram="column",
 			ColSideColors = column.colors,
 			...
 		)
@@ -619,37 +629,53 @@ getDNAinstability <- function(x,divideBy=1e6){
 }
 
 
-cghToCrosstab <- function(x,factor){
+cghToCrosstab <- function(x,factor,levels=3){
   require(CGHregions)
   f <- factor(pData(x)[,factor])
   ct <- list()
+  stopifnot(levels %in% c(3,5))
   for(i in featureNames(x)){
     ct[[i]] <- data.frame(row.names=levels(f))
-    for(group in levels(f)){
-      ct[[i]][group,"loss"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]<0)
-      ct[[i]][group,"normal"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==0)
-      ct[[i]][group,"gain"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]>0)
+    if(levels==3){
+      for(group in levels(f)){
+        ct[[i]][group,"loss"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]<0)
+        ct[[i]][group,"normal"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==0)
+        ct[[i]][group,"gain"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]>0)
+      }
+    } else {
+        for(group in levels(f)){
+          ct[[i]][group,"big.loss"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==-2)
+          ct[[i]][group,"loss"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==-1)
+          ct[[i]][group,"normal"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==0)
+          ct[[i]][group,"gain"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==1)
+          ct[[i]][group,"big.gain"] <- sum(regions(x)[i,which(pData(x)[,factor]==group)]==2)
+        }
     }
   }
   return(ct)
 }
 
-cghFreqPlot <- function(x,group=NULL,base=12,usePercentage=T,fill=T,scales="free_x"){
+cghFreqPlot <- function(x,group=NULL,base=12,scales="free_x"){
 	require(CGHregions)
 	require(reshape)
 	require(ggplot2)
+	require(grid)
 	r <- melt(regions(x))
 	colnames(r) <- c("index","sample","call")
 	r$call[r$call < -1] <- -1
 	r$call[r$call > 1] <- 1
 	if(missing(group)){
 		r$group <- "all"
+    	r$group <- as.factor(r$group)
 		groupSizes <- ncol(x)
 		names(groupSizes) <- "all"
 	} else {
 		r$group <- pData(x)[as.character(r$sample),group]
 		groupSizes <- summary(pData(x)[,group])
 	}
+	groupNames <- paste(names(groupSizes)," (N=",groupSizes,")",sep="")
+	names(groupSizes) <- groupNames
+	levels(r$group) <- groupNames
 	r <- cast(r,index ~ call + group,fun.aggregate=length,value="sample")
 	r <- melt(r,id.vars="index")
 	r$chr <- chromosomes(x)[r$index]
@@ -660,14 +686,18 @@ cghFreqPlot <- function(x,group=NULL,base=12,usePercentage=T,fill=T,scales="free
 	r <- subset(r,call != 0)
 	r$value <- r$value * r$call
 	# get percentages
-	if(usePercentage){
-		r$value <- r$value / groupSizes[as.character(r$group)]	
-	}
+	r$value <- r$value / groupSizes[as.character(r$group)]	
+	# get percentage of supergains/losses
+	gains <- rownames(subset(r,call==1))
+	losses <- rownames(subset(r,call==-1))
+	r[gains,"supers"] <- apply(regions(x[r[gains,"index"],]),1,function(x){sum(x==2)/length(x)})
+	r[losses,"supers"] <- apply(regions(x[r[losses,"index"],]),1,function(x){sum(x==-2)/length(x)})
 	# plotting
 	p <- ggplot(r) + 
-		geom_step(aes(x=start,y=value,color=factor(call))) + 
+	  geom_bar(aes(x=midpoint,y=value,width=size,fill=factor(call),alpha=supers),stat="identity",position="identity") + 
 		facet_grid(group~chr,scales=scales,space=scales) +
-		scale_colour_manual(values=c("blue","red")) + 
+		scale_fill_manual(values=c("blue","red")) + 
+    ylim(c(-1,1)) +
 		theme_bw(base_size=base) + 
 		theme(
 			legend.position="none",
@@ -677,20 +707,10 @@ cghFreqPlot <- function(x,group=NULL,base=12,usePercentage=T,fill=T,scales="free
 			panel.grid = element_blank(),
 			panel.margin = unit(0,"cm")
 		)
-	if(fill){
-		p <- p +  
-			geom_bar(
-				aes(x=midpoint,y=value,width=size,fill=factor(call)),     
-				alpha=1/3,
-				stat="identity",
-				position="identity"
-		) + 
-		scale_fill_manual(values=c("blue","red"))
-	}
 	return(p)
 }
 
-cghKaryoHeatmap <-function(x,rows=2,scales="fixed"){
+cghKaryoHeatmap <-function(x,rows=2,scales="fixed",base=12){
 	require(CGHregions)
 	require(reshape)
 	require(ggplot2)
@@ -706,19 +726,38 @@ cghKaryoHeatmap <-function(x,rows=2,scales="fixed"){
 		scale_fill_manual(values=c("purple","blue","grey","red","black")) + 
 		facet_wrap(~chr,nrow=rows,scales=scales) +
 		scale_y_continuous(breaks=seq(0,300e6,10e6),labels=paste(seq(0,300,10),"Mb",sep=" ")) +
-		theme_bw() + 
+		theme_bw(base_size=base) + 
 		theme(
 			legend.position = "top",
 			legend.title = element_blank(),
 			axis.ticks.x = element_blank(),
 			axis.text.x = element_blank(),
 			panel.grid = element_blank(),
-			axis.title.y = element_blank(),
+			axis.title.y = element_blank()
 		) + 
 		labs(x=paste("Samples (N=",totalSamples,")",sep=""))
 	return(p)
 } 
 
+bedHeatmap <- function(x,fill="green",scales="fixed",rows=2,base=12){
+	require(ggplot2)
+	colnames(x) <- c("chr","start","end","sample","value")
+	x$size <- x$end - x$start
+	p <- ggplot(x) +
+		geom_bar(aes(x=sample,y=size),fill=fill,stat="identity",width=1) +
+		facet_wrap(~chr,nrow=rows,scales=scales) +
+		scale_y_continuous(breaks=seq(0,300e6,10e6),labels=paste(seq(0,300,10),"Mb",sep=" ")) +
+		theme_bw(base_size=base) + 
+		theme(
+			legend.position = "top",
+			legend.title = element_blank(),
+			axis.ticks.x = element_blank(),
+			axis.text.x = element_blank(),
+			panel.grid = element_blank(),
+			axis.title.y = element_blank()
+		)
+	return(p)
+}
 
 bedFreqPlot <- function(x,fill=T,color="green",base=12){
   require(ggplot2)
@@ -727,7 +766,7 @@ bedFreqPlot <- function(x,fill=T,color="green",base=12){
   x$midpoint <- rowMeans(x[,c("start","end")])
   x$size <- x$end - x$start
   p <- ggplot(x) + 
-    geom_step(aes(x=start,y=value),color=color) + 
+    geom_bar(aes(x=midpoint,y=value,width=size),fill=color,stat="identity",position="identity") + 
     facet_grid(group~chr,scales="free_x",space="free_x") + 
     theme_bw(base_size=base) +
     theme(
@@ -742,15 +781,5 @@ bedFreqPlot <- function(x,fill=T,color="green",base=12){
       x="Genomic position",
       y=paste("Frequency")
     )
-  if(fill){
-    p <- p +  
-      geom_bar(
-        aes(x=midpoint,y=value,width=size),
-	fill=color,        
-	alpha=1/3,
-        stat="identity",
-        position="identity"
-      )
-  }
   return(p)
 }

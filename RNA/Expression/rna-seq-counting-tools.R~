@@ -16,11 +16,11 @@ countsToFpkm <- function(x,gene.sizes){
 }
 
 # convert FPKM to log-transformed FPKM
-logFPKM <- function(x,base=10){
+logFpkm <- function(x,base=10){
 	# remove genes with missing FPKM	
 	x <- na.omit(x)
 	# remove genes that have 0 FPKM in all samples
-	keep <- which(apply(fpkm,1,sum)>0)
+	keep <- which(apply(x,1,sum)>0)
 	x <- x[keep,]
 	# offset all values by small number
 	# so that 0's don't exist any more.
@@ -32,7 +32,7 @@ logFPKM <- function(x,base=10){
 }
 
 # make a 3d plot from a prcomp-object
-plotPCA <- function(x,scale=TRUE,boxAngle=45,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){
+plotPCA <- function(x,scale=TRUE,boxAngle=45,showLabels=T,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){
 	stopifnot(class(x)=="prcomp")
 	pca <- x
 	if(missing(colors)){
@@ -45,24 +45,27 @@ plotPCA <- function(x,scale=TRUE,boxAngle=45,labelOffset=3,labelAngle=45,labelCe
 		color = colors,
 		...
 	)
-	text(
-		scatter$xyz.convert(pca$x[,1], pca$x[,2], pca$x[,3]), 
-		labels=rownames(pca$x),
-		pos = labelOffset,
-		srt = labelAngle,
-		cex = labelCex,
-		col = colors
-	) 		
+	if(labels){
+		text(
+			scatter$xyz.convert(pca$x[,1], pca$x[,2], pca$x[,3]), 
+			labels=rownames(pca$x),
+			pos = labelOffset,
+			srt = labelAngle,
+			cex = labelCex,
+			col = colors
+		) 	
+	}	
 	return(scatter)
 }
 
 # get the N most variable genes
-getMostVar <- function(x,n=250){
+getMostVar <- function(x,n=250,stat=sd){
 	# calculate std dev for all genes
-	sds <- apply(x,1,sd)
+	sds <- apply(x,1,stat)
 	# sort descending
 	sds <- sds[order(sds,decreasing=T)]
 	# get the names of the N most variable genes
 	most.var.genes <- names(sds)[1:n]
+	return(most.var.genes)
 }
 
