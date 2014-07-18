@@ -12,6 +12,7 @@ if(length(args) != 2){
 } else {
 	input.dir <- args[1]
 	windowsFile <- args[2]
+  minmax <- as.numeric(args[3])
 }
 
 # collect counts for all samples in the
@@ -61,26 +62,9 @@ lrr <- cbind(counts[good.windows,1:4],lrr)
 lrr <- melt(lrr,id.vars=colnames(lrr)[1:4])
 colnames(lrr)[5:6] <- c("sample","lrr")
 # apply min and max values
-lrr[which(lrr$lrr > 3),"lrr"] <- 3
-lrr[which(lrr$lrr < -3),"lrr"] <- -3
+lrr[which(lrr$lrr > 3),"lrr"] <- minmax
+lrr[which(lrr$lrr < -3),"lrr"] <- minmax
 
-pngH <- length(levels(lrr$sample)) * 4
-for(gene in levels(lrr$symbol)){
-	tmp <- subset(lrr,symbol==gene)
-	pngName <- paste(gene,".png",sep="")
-	print(pngName)
-	png(paste(gene,".png",sep=""),width=15,height=pngH,units="cm",res=300)
-	plot <- ggplot(tmp) + 
-		geom_segment(aes(x=start,xend=end,y=lrr,yend=lrr),color="red",size=2) + 
-		facet_grid(sample~symbol + chr) + 
-		scale_y_continuous(limits=c(-3,3),breaks=-3:3) +
-		theme_bw() +
-		theme(panel.grid = element_blank()) +
-		geom_hline(yintercept=log2(1/2),color="black",linetype="dashed") +
-		geom_hline(yintercept=log2(3/2),color="black",linetype="dashed")
-	print(plot)
-	dev.off()
-}
 # and export the log-r-ratios data frame
 write.csv(lrr,file="lrr-values.csv",row.names=F,col.names=T)
 

@@ -531,7 +531,7 @@ makeColSideColors <- function(x){
 	return(as.matrix(col))
 }
 
-categoriesToColors <- function(x){
+categoriesToColors <- function(x,palette="Set1"){
 	if(is.numeric(x)){ 
 		stop("You should provide non-numeric vector")
 	}
@@ -539,7 +539,7 @@ categoriesToColors <- function(x){
 	n <- length(unique(x))
 	if(n<3){n<-3}
 	require(RColorBrewer)
-	colors <- brewer.pal(n,"Set1")[factor(x)]
+	colors <- brewer.pal(n,palette)[factor(x)]
 	colors[which(is.na(colors))] <- "grey"
 	return(colors)
 }
@@ -585,12 +585,12 @@ plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL){
 	return(plot)
 }
 
-dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.colors,labRow=F,...){
+dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.colors,colors=c("purple","blue","grey","red","black"),labRow=F,...){
 	require(RColorBrewer)
 	if(missing(column.colors)){	
 		h <- heatmap.3(
 			x = x,
-			col = c("purple","blue","grey","red","black"),
+			col = colors,
 			Rowv = F,
 			Colv = col,
 			keysize=1,
@@ -603,7 +603,7 @@ dna.clustering <- function(x,dist=distPearson,clust=clustWard,col=T,column.color
 	} else {
 		h <- heatmap.3(
 			x = x,
-			col = c("purple","blue","grey","red","black"),
+			col = colors,
 			Rowv = F,
 			Colv = col,
 			keysize=1,
@@ -655,18 +655,23 @@ cghToCrosstab <- function(x,factor,levels=3){
   return(ct)
 }
 
-cghFreqPlot <- function(x,group=NULL,base=12,scales="free_x"){
+cghFreqPlot <- function(x,group=NULL,base=12,scales="free_x",alpha=1,ylim100percent=T){
 	require(CGHregions)
 	require(reshape)
 	require(ggplot2)
 	require(grid)
-	r <- melt(regions(x))
-	colnames(r) <- c("index","sample","call")
+	r <- as.data.frame(regions(x))
+  r$index <- 1:nrow(r)
+  r$chr <- chromosomes(x)
+  r$start <- bpstart(x)
+  r$end <- bpend(x)
+	r <- melt(r,id.vars=c("index","chr","start","end"))
+  colnames(r) <- c("index","chr","start","end","sample","call")
 	r$call[r$call < -1] <- -1
 	r$call[r$call > 1] <- 1
 	if(missing(group)){
 		r$group <- "all"
-    	r$group <- as.factor(r$group)
+    r$group <- as.factor(r$group)
 		groupSizes <- ncol(x)
 		names(groupSizes) <- "all"
 	} else {
@@ -687,17 +692,11 @@ cghFreqPlot <- function(x,group=NULL,base=12,scales="free_x"){
 	r$value <- r$value * r$call
 	# get percentages
 	r$value <- r$value / groupSizes[as.character(r$group)]	
-	# get percentage of supergains/losses
-	gains <- rownames(subset(r,call==1))
-	losses <- rownames(subset(r,call==-1))
-	r[gains,"supers"] <- apply(regions(x[r[gains,"index"],]),1,function(x){sum(x==2)/length(x)})
-	r[losses,"supers"] <- apply(regions(x[r[losses,"index"],]),1,function(x){sum(x==-2)/length(x)})
 	# plotting
 	p <- ggplot(r) + 
-	  geom_bar(aes(x=midpoint,y=value,width=size,fill=factor(call),alpha=supers),stat="identity",position="identity") + 
+	  geom_bar(aes(x=midpoint,y=value,width=size,fill=factor(call)),stat="identity",position="identity") + 
 		facet_grid(group~chr,scales=scales,space=scales) +
 		scale_fill_manual(values=c("blue","red")) + 
-    ylim(c(-1,1)) +
 		theme_bw(base_size=base) + 
 		theme(
 			legend.position="none",
@@ -707,10 +706,13 @@ cghFreqPlot <- function(x,group=NULL,base=12,scales="free_x"){
 			panel.grid = element_blank(),
 			panel.margin = unit(0,"cm")
 		)
+	if(ylim100percent){
+	  p <- p + ylim(c(-1,1))
+	} 
 	return(p)
 }
 
-cghKaryoHeatmap <-function(x,rows=2,scales="fixed",base=12){
+cghKaryoHeatmap <-function(x,rows=2,scales="fixed",base=12,flip=F,colors=c("purple","blue","grey","red","black")){
 	require(CGHregions)
 	require(reshape)
 	require(ggplot2)
@@ -721,21 +723,39 @@ cghKaryoHeatmap <-function(x,rows=2,scales="fixed",base=12){
 	r$size <- bpend(x) - bpstart(x)
 	r<-melt(r,id.vars=c("chr","size"))
 	colnames(r)[3:4] <- c("sample","call")
-	p <- ggplot(r) + 
-		geom_bar(aes(x=sample,y=size,fill=factor(call)),stat="identity",width=1) +
-		scale_fill_manual(values=c("purple","blue","grey","red","black")) + 
-		facet_wrap(~chr,nrow=rows,scales=scales) +
-		scale_y_continuous(breaks=seq(0,300e6,10e6),labels=paste(seq(0,300,10),"Mb",sep=" ")) +
-		theme_bw(base_size=base) + 
-		theme(
-			legend.position = "top",
-			legend.title = element_blank(),
-			axis.ticks.x = element_blank(),
-			axis.text.x = element_blank(),
-			panel.grid = element_blank(),
-			axis.title.y = element_blank()
-		) + 
-		labs(x=paste("Samples (N=",totalSamples,")",sep=""))
+	if(flip){
+	  p <- ggplot(r) + 
+	    geom_bar(aes(x=sample,y=size,fill=factor(call)),stat="identity",width=1) +
+	    scale_y_continuous(breaks=seq(0,300e6,10e6),labels=paste(seq(0,300,10),"Mb",sep=" ")) + 
+      coord_flip() + 
+	    scale_fill_manual(values=colors) + 
+	    facet_wrap(~chr,nrow=rows,scales=scales) + 
+	    theme_bw(base_size=base) + 
+	    theme(
+	      legend.position = "top",
+	      legend.title = element_blank(),
+	      axis.ticks.y = element_blank(),
+	      axis.text.y = element_blank(),
+	      panel.grid = element_blank(),
+	      axis.title.y = element_blank()	    ) +
+      labs(y=paste("Samples (N=",totalSamples,")",sep=""))
+	} else {
+	  p <- ggplot(r) + 
+	    geom_bar(aes(x=sample,y=size,fill=factor(call)),stat="identity",width=1) +
+	    scale_fill_manual(values=colors) + 
+	    facet_wrap(~chr,nrow=rows,scales=scales) + 
+	    theme_bw(base_size=base) + 
+	    theme(
+	      legend.position = "top",
+	      legend.title = element_blank(),
+	      axis.ticks.x = element_blank(),
+	      axis.text.x = element_blank(),
+	      panel.grid = element_blank(),
+	      axis.title.y = element_blank()
+	    ) + 
+	    scale_y_continuous(breaks=seq(0,300e6,10e6),labels=paste(seq(0,300,10),"Mb",sep=" ")) + 
+	    labs(x=paste("Samples (N=",totalSamples,")",sep=""))
+	}
 	return(p)
 } 
 
@@ -781,5 +801,37 @@ bedFreqPlot <- function(x,fill=T,color="green",base=12){
       x="Genomic position",
       y=paste("Frequency")
     )
+  return(p)
+}
+
+cghSquareHeatmap <- function(x){
+  require(CGHregions)
+  require(reshape)
+  require(ggplot2)
+  require(grid)
+  d <- as.data.frame(regions(x))
+  d$region <- rownames(d)
+  d$chr <- chromosomes(x)
+  d$start <- bpstart(x)
+  d$end <- bpend(x)
+  sapply(d,class)
+  d <- melt(d,id.vars=c("region","chr","start","end"))
+  colnames(d)[5:6] <- c("sample","call")
+  d$size <- d$end - d$start
+  p <- ggplot(d) + 
+    geom_bar(aes(x=sample,y=size,fill=factor(call)),position="stack",stat="identity",width=1) + 
+    facet_grid(chr ~ .,scales="free",space="free") + 
+    scale_y_reverse() + 
+    theme(
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      panel.background = element_blank(),
+      legend.position = "bottom",
+      panel.margin = unit(0,"cm"),
+      plot.margin = unit(c(0,0,0,0),"cm")
+    ) + 
+    scale_fill_manual(values=c("blue","grey","red")) +
+    labs(fill="Copy number call")
   return(p)
 }

@@ -1,38 +1,11 @@
-# convert counted fragments to FPKM
-countsToFpkm <- function(x,gene.sizes){
-	if(missing(gene.sizes)){
-		stop("Please use argument gene.sizes=")
-	}
-	# divide by gene size in kbs
-	gene.sizes <- gene.sizes / 1e3
-	x <- x[names(gene.sizes),]
-	x <- x / gene.sizes
-	x <- na.omit(x)
-	# calculate amount of fragments per sample in millions
-	lib.sizes <- apply(x,2,sum) / 1e6
-	# divide by library size
-	x <- t(t(x) / lib.sizes)
-	return(x)
-}
+# to convert counts to (log)FPKM use rpkm()-method from edgeR
+# ...
 
-# convert FPKM to log-transformed FPKM
-logFpkm <- function(x,base=10){
-	# remove genes with missing FPKM	
-	x <- na.omit(x)
-	# remove genes that have 0 FPKM in all samples
-	keep <- which(apply(x,1,sum)>0)
-	x <- x[keep,]
-	# offset all values by small number
-	# so that 0's don't exist any more.
-	# Otherwise, log-transform will give errors
-	offset <- min(x[x>0]) / 10
-	x <- x + offset
-	x <- log(x,base=base)
-	return(x)
-}
+# filter genes with low counts/fpkm in (almost) all samples
+# ...
 
 # make a 3d plot from a prcomp-object
-plotPCA <- function(x,scale=TRUE,boxAngle=45,showLabels=T,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){
+plotPCA <- function(x,boxAngle=45,showLabels=T,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){
 	stopifnot(class(x)=="prcomp")
 	pca <- x
 	if(missing(colors)){
@@ -100,4 +73,6 @@ compareCountMatrix <- function(x,y,plotDir="correlationPlots",labels=c("m1","m2"
   }  
   return(cors)
 }
+
+
 
