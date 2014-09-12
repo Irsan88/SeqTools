@@ -29,7 +29,7 @@ do
 	forward=$(readlink -f $inputDir/$sample\_*R1*.gz)
 	reverse=$(readlink -f $inputDir/$sample\_*R2*.gz)
 	java -classpath $trimJar org.usadellab.trimmomatic.TrimmomaticPE \
-		-threads 8 \
+		-threads 2 \
 		-phred33 \
 		$forward \
 		$reverse \

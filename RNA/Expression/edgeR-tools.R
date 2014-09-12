@@ -1,7 +1,7 @@
 # description: wrapper for anova on N groups and all pairwise comparisons
 
-# to-do: when the group factor only contains two levels, no
-# one-way anova is needed (is the same as two-samples t-test)
+# to-do: by default all pairwise comparisons are analyzed. Make it possible
+# for the user to provide preset comparisons himself
 
 compareNGroupsEdgeR <- function(y,model="group",normalization="TMM",BCV){
 	if(missing(y)){
@@ -37,11 +37,51 @@ compareNGroupsEdgeR <- function(y,model="group",normalization="TMM",BCV){
 
 	# get results from the fit
 	top.tables <- list()
-	top.tables[["OneWayAnova"]] <- topTags(glmLRT(fit,contrast=pairwise.contrasts),n=nrow(y))$table
+  if(ncol(pairwise.contrasts) > 1){
+	  top.tables[["OneWayAnova"]] <- topTags(glmLRT(fit,contrast=pairwise.contrasts),n=nrow(y))$table
+  }
 	for(contrast in colnames(pairwise.contrasts)){
+    print(contrast)
 		top.tables[[contrast]]  <- topTags(glmLRT(fit,contrast=pairwise.contrasts[,contrast]),n=nrow(y))$table
 	}
 	return(top.tables)
+}
+
+anovaLikeEdgeR <- function(y,model="group",normalization="TMM",BCV){
+  if(missing(y)){
+    stop("Provide DGElist object")
+  }
+  stopifnot(class(y)=="DGEList")
+  # the DGEList should containt y$samples with one column
+  # named groups which is the factor for the analysis
+  
+  model <- paste("~0 + ",model,sep="")
+  model <- as.formula(model)
+  design <- model.matrix(model,data=y$samples)
+  colnames(design)  <- gsub("^group(.*$)","\\1",colnames(design))
+  # get all pairwise combinations in vector
+  combinationsMatrix <- combn(levels(y$samples$group),2)
+  comparisonsCharacter <- apply(combinationsMatrix,2,function(x){paste(x[c(2,1)],collapse=" - ")})
+  # make all contrasts
+  pairwise.contrasts <- makeContrasts(contrasts=eval(comparisonsCharacter),levels=design)
+  
+  # normalize counts and fit general model
+  y <- calcNormFactors(y,method=normalization)
+  y <- estimateGLMCommonDisp(y,design)
+  y <- estimateGLMTrendedDisp(y,design)
+  y <- estimateGLMTagwiseDisp(y,design)
+  fit <- glmFit(y,design)
+  
+  if(!missing(BCV)){
+    # plot BCV
+    png(BCV,15,15,"cm",res=300)
+    plotBCV(y)
+    dev.off()    
+  }
+  
+  # get results from the fit
+  top.table <- topTags(glmLRT(fit,contrast=pairwise.contrasts),n=nrow(y))$table
+  return(top.table)
 }
 
 # description: inspect counts for a gene per sample

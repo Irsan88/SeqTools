@@ -451,7 +451,7 @@ heatmap.3 <- function(x,
 # Define clustering functions
 clustAverage <- function(x) hclust(x, method="average") 
 clustComplete <- function(x) hclust(x,method="complete")
-clustWard <- function(x) hclust(x,method="ward")
+clustWard <- function(x) hclust(x,method="ward.D")
 distPearson <- function(x) as.dist(1-cor(t(x), method="pearson"))
 distEuclidean <- function(x) dist(x,method = 'euclidean')
 distMax <- function(x) dist(x,method = 'maximum')
@@ -460,16 +460,23 @@ distCanberra <- function(x) dist(x,method = 'canberra')
 distBinary <- function(x) dist(x,method = 'binary')
 distMinkowski <- function(x) dist(x,method = 'minkowski')
 
+# colors for heatmaps
+blueRedCols <- colorRampPalette(c("blue3","blue2","blue1","blue","white","red","red1","red2","red3"))(100)
 
-rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=colorRampPalette(c("green2","green","green","black","red","red","red2"))(100),column.colors,row.colors,labRow=F,...){
+rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,minmaxCol=2,palette="RdBu",col,column.colors,row.colors,labRow=F,...){
 	require(affy)
 	require(RColorBrewer)
 	require(gplots)
+  br <- seq(-1*minmaxCol,minmaxCol,length.out=41)
+  if(missing(col)){
+    col <- colorRampPalette(rev(brewer.pal(n=11,name=palette)))(length(br)-1)
+  }
 	source("~/scripts/heatmap.R")
 	if(missing(column.colors) & missing(row.colors)){
 		h <- heatmap.3(
 			x = x,
 			col = col,
+      breaks=br,
 			labRow = labRow,
 			scale=scale,
       hclustfun = hc,
@@ -480,6 +487,7 @@ rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=color
 		h <- heatmap.3(
 			x = x,
 			col = col,
+			breaks=br,
 			labRow = labRow,
 			ColSideColors = column.colors,
 			scale=scale,
@@ -491,6 +499,7 @@ rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=color
 		h <- heatmap.3(
 			x = x,
 			col = col,
+			breaks=br,
 			labRow = labRow,
 			RowSideColors = row.colors,
 			scale=scale,
@@ -503,6 +512,7 @@ rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=color
 		h <- heatmap.3(
 			x = x,
 			col = col,
+			breaks=br,
 			labRow = labRow,
 			ColSideColors = column.colors,
 			RowSideColors = row.colors,
@@ -518,20 +528,20 @@ rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,col=color
 }
 
 
-makeColSideColors <- function(x){
+makeColSideColors <- function(x,colors){
 	require(affy)
 	col <- data.frame(row.names=rownames(x))
 	for(column in colnames(x)){
 		if(is.numeric(x[,column])){
 			col[,column] <- numericToColors(x[,column])
 		} else {
-			col[,column] <- categoriesToColors(x[,column])		
+			col[,column] <- categoriesToColors(x[,column],colors=colors)		
 		}
 	}
 	return(as.matrix(col))
 }
 
-categoriesToColors <- function(x,palette="Set1"){
+categoriesToColors <- function(x,colors,palette="Set1"){
 	if(is.numeric(x)){ 
 		stop("You should provide non-numeric vector")
 	}
@@ -539,7 +549,11 @@ categoriesToColors <- function(x,palette="Set1"){
 	n <- length(unique(x))
 	if(n<3){n<-3}
 	require(RColorBrewer)
-	colors <- brewer.pal(n,palette)[factor(x)]
+  if(missing(colors)){
+    colors <- brewer.pal(n,name=palette)[factor(x)]
+  } else {
+    colors <- colors[factor(x)]
+  }
 	colors[which(is.na(colors))] <- "grey"
 	return(colors)
 }
