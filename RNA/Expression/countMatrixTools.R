@@ -1,8 +1,61 @@
 # to convert counts to (log)FPKM use rpkm()-method from edgeR
 # ...
 
-# filter genes with low counts/fpkm in (almost) all samples
-# ...
+# filter genes with low counts
+removeLowExpressionGenes <- function(x,percentageSamples=0.8,countThreshold=10){
+  if(missing(x)){
+    stop("Provide count matrix")
+  }
+  if(class(x)!="matrix"){
+    stop("x should be a count matrix")
+  }
+  numberSamples <- ncol(x)
+  numberSamplesThreshold <- numberSamples * percentageSamples
+  bad.genes <- apply(x,1,function(x){sum(x < countThreshold)}) > numberSamplesThreshold
+  good.genes <- !bad.genes
+  return(x[good.genes,])
+}
+
+# Define clustering functions
+clustAverage <- function(x) hclust(x, method="average") 
+clustComplete <- function(x) hclust(x,method="complete")
+clustWard <- function(x) hclust(x,method="ward.D")
+distPearson <- function(x) as.dist(1-cor(t(x), method="pearson"))
+distEuclidean <- function(x) dist(x,method = 'euclidean')
+distMax <- function(x) dist(x,method = 'maximum')
+distManhattan <- function(x) dist(x,method = 'manhattan')
+distCanberra <- function(x) dist(x,method = 'canberra')
+distBinary <- function(x) dist(x,method = 'binary')
+distMinkowski <- function(x) dist(x,method = 'minkowski')
+
+#  cluster the columns of a matrix, can be applied to normalized expression matrices
+dendrogramSamples <- function(x,distanceMethod=distPearson,clusterMethod=clustWard){
+  if(missing(x)){
+    stop("Provide count matrix")
+  }
+  if(class(x)!="matrix"){
+    stop("x should be a count matrix")
+  }
+  # by default, clustering/distances are calculated on genes of a matrix, 
+  # so for samples, transpose the matrix so that columns become rows
+  x <- t(x)
+  distances <- distanceMethod(x)
+  clusters <- clusterMethod(distances)
+  dd <- as.dendrogram(clusters)
+  return(dd)
+}
+
+pcaOnSamples <- function(x){
+  if(missing(x)){
+    stop("Provide count matrix")
+  }
+  if(class(x)!="matrix"){
+    stop("x should be a count matrix")
+  }
+  x <- t(x)
+  pcaResult <- prcomp(x,center=T,scale=T)
+  return(pcaResult)
+}
 
 # make a 3d plot from a prcomp-object
 plotPCA <- function(x,boxAngle=45,showLabels=T,labelOffset=3,labelAngle=45,labelCex=1,colors=NULL,...){

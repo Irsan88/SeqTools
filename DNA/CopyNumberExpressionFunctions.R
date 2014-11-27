@@ -849,3 +849,87 @@ cghSquareHeatmap <- function(x){
     labs(fill="Copy number call")
   return(p)
 }
+
+plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThreshold,dilutionPercentage=0.1,chrList,sampleList,startMin,endMax){
+  # make sure lrr is a data frame with chr, pos, lrrSample1, lrrSample2, lrrSample3
+  colnames(lrr)[1:2] <- c("chrom","pos")
+  samples <- colnames(lrr)[3:ncol(lrr)]
+  # subset chromosomes
+  if(!missing(chrList)){
+    lrr <- subset(lrr,chrom %in% chrList)
+  }
+  # subset samples
+  if(!missing(sampleList)){
+    lrr <- lrr[,c("chrom","pos",sampleList)]
+  }
+  # subset start
+  if(!missing(startMin)){
+    lrr <- subset(lrr,pos >  startMin)
+  }
+  # subset end
+  if(!missing(endMax)){
+    lrr <- subset(lrr,pos <  endMax)
+  }
+  # randomly diltue lrr, useful if many points
+  keep <- sample(1:nrow(lrr),size=round(dilutionPercentage*nrow(lrr)),replace=F)
+  lrr <- lrr[keep,]
+  require(reshape)
+  lrr <- melt(lrr,id.vars=c("chrom","pos"))
+  colnames(lrr)[3:4] <- c("ID","seg.mean")
+  require(ggplot2)
+  p <- ggplot(lrr) +
+    geom_point(aes(x=pos,y=seg.mean)) +
+    facet_grid(ID ~ chrom,space="free_x",scales="free_x")
+  if(!missing(segments)){
+    # subset chrs
+    if(!missing(chrList)){
+      segments <- subset(segments,chrom %in% chrList)
+    }
+    # subset samples
+    if(!missing(sampleList)){
+      segments <- subset(segments,ID %in% sampleList)
+    }
+    p <- p + geom_segment(aes(x=loc.start,xend=loc.end,y=seg.mean,yend=seg.mean),col="red",data=segments)
+  }
+  if(!missing(startMin) | !missing(endMax)){
+    p <- p + coord_cartesian(xlim=c(startMin,endMax))
+  }
+  return(p)
+}
+
+# Generic copy number frequency plot tool
+copyNumberFrequencyPlot <- function(calls,featureData,groups=NULL){
+  # calls and featureData is required, groups is optional
+  if(missing(calls) | missing(featureData)){
+    stop("Provide calls and featureData")
+  }
+  # featureData should contain chr, start & end
+  if(!all(c("chr","start","end") %in% colnames(featureData))){
+    stop("featureData should at least contain columns named chr, start & end")
+  }
+  # the chr column of feature data should be integer or factor
+  if(!class(featureData$chr) %in% c("integer","factor")){
+    stop("The chr column is not an integer or a sorted character (factor)")
+  }
+  # the number of features should be equal to the number of rows in calls
+  if(nrow(calls) != nrow(featureData)){
+    stop("calls and featureData should have equal number of rows")
+  }
+  # if groups is defined, it should have the same lenght as the number of 
+  # columns of calls
+  if(!missing(groups) & length(groups)!= ncol(calls)){
+    stop("Number of group members should be equal to number of columns in calls")
+  }
+  x <- cbind(featureData[,c("chr","start","end")],calls)
+  require(reshape)
+  x <- melt(c,id.vars=c("chr","start","end"))
+  colnames(x) <- c("feature","sample","call")
+  # add group info to each sample when available
+  if(missing(groups)){
+    x$group <- "all"
+  } else {
+    names(groups) <- colnames(calls)
+    x$group <- groups[as.character(x$sample)]
+  }
+  return(x)
+}
