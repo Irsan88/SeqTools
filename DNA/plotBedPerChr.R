@@ -12,28 +12,33 @@ if(length(args) != 2){
   inputDir <- "./"
   searchPattern <- "*.bed"
 } else {
-  inputDir <- args[1]
-  searchPattern <- args[2]
+  inputDir <- as.character(args[1])
+  searchPattern <- as.character(args[2])
 }
+
+# for debugging
+print(inputDir)
+print(searchPattern)
 
 # load dependendies
 require(ggplot2)
 
-# set parameters
-inputDir <- "./"
-searchPattern <- "*.bed"
+# define chrs
 useChromosomes <- paste("chr",c(1:22,"X","Y"),sep="")
 
 # define file inputs
 inputFiles <- list.files(path=inputDir,pattern=searchPattern,full.names=T,recursive=T)
+stopifnot(length(inputFiles) > 0)
+print(inputFiles)
 
 # import data
 inputDataList <- list()
 for(file in inputFiles){
-  inputDataList[[file]] <- read.table(file,sep="\t",header=F,) 
+  inputDataList[[file]] <- read.table(file,sep="\t",header=F) 
 }
-chromosomesDetected <- sum(unique(sapply(inputDataList,function(x){x[,1]})) %in% useChromosomes)
-stopifnot(chromosomesDetected > 0)
+chromosomesDetected <- unique(sapply(inputDataList,function(x){x[,1]}))
+numberChromosomesDetected <- sum(chromosomesDetected %in% useChromosomes)
+stopifnot(numberChromosomesDetected > 0)
 
 # make sure chromosomes are in nice order
 inputDataList <- lapply(inputDataList,function(x){
@@ -46,10 +51,11 @@ inputDataList <- lapply(inputDataList,function(x){
 # coordinates for each chromosome seperately
 for(file in names(inputDataList)){
   data <- inputDataList[[file]]
+  name <- gsub("(.*)\\..*","\\1",file)
   # create pdf file
-  pdf(paste(file,".pdf",sep=""),width=10,height=3,onefile=T)
+  pdf(paste(name,".pdf",sep=""),width=10,height=3,onefile=T)
   # loop over all chrs
-  for(chr in chrs){
+  for(chr in chromosomesDetected){
     tmp <- subset(data,V1==chr)
     totalSnps <- nrow(tmp)
     p <- ggplot(tmp) + 
@@ -62,14 +68,4 @@ for(file in names(inputDataList)){
   dev.off()
 }
 
-pdf("MDAM330-BAF-snpCommon142-depthAbove20.pdf",width=10,height=3,onefile=T)
-for(chr in chrs){
-  tmp <- subset(data,V1==chr)
-  totalSnps <- nrow(tmp)
-  p <- ggplot(tmp) + 
-    geom_point(aes(x=V2,y=V5)) + 
-    scale_x_continuous(breaks=seq(0,250e6,by=10e6),labels=seq(0,250,by=10)) +
-    labs(x="Genomic Position (Mbps)",y="VAF",title=paste(chr,": ",totalSnps," SNPs",sep=""))
-  print(p)
-}
-dev.off()
+q(save="no")
