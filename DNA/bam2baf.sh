@@ -17,11 +17,15 @@ ref=$2
 snps=$3
 cov=$4
 
+# get directory where this file is stored in so 
+# you can use mpileup2baf.pl
+dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 samtools mpileup \
 	-f $ref \
 	-l $snps \
 	-q 35 \
 	-Q 20 \
 	$bam | \
-mpileup2baf.pl \
+$dir/mpileup2baf.pl \
 	--min-reads $cov 
