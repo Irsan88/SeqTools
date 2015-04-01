@@ -36,7 +36,8 @@ inputDataList <- list()
 for(file in inputFiles){
   inputDataList[[file]] <- read.table(file,sep="\t",header=F) 
 }
-chromosomesDetected <- unique(sapply(inputDataList,function(x){x[,1]}))
+chromosomesDetected <- unique(unlist(sapply(inputDataList,function(x){x[,1]})))
+print(chromosomesDetected)
 numberChromosomesDetected <- sum(chromosomesDetected %in% useChromosomes)
 stopifnot(numberChromosomesDetected > 0)
 
