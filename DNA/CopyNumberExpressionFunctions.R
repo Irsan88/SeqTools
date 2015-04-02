@@ -876,11 +876,16 @@ plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThresh
   require(reshape)
   lrr <- melt(lrr,id.vars=c("chrom","pos"))
   colnames(lrr)[3:4] <- c("ID","seg.mean")
+  # make sure the sample order of plotting is not alfabetic but the original
+  # provided order in the lrr data frame
+  lrr$ID <- factor(lrr$ID,levels=samples)
   require(ggplot2)
   p <- ggplot(lrr) +
     geom_point(aes(x=pos,y=seg.mean)) +
     facet_grid(ID ~ chrom,space="free_x",scales="free_x")
   if(!missing(segments)){
+    # first make sure the samples are in the right order
+    segments$ID <- factor(segments$ID,levels=samples)
     # subset chrs
     if(!missing(chrList)){
       segments <- subset(segments,chrom %in% chrList)
