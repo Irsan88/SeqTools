@@ -29,7 +29,7 @@ do
 	forward=$(readlink -f $inputDir/$sample\_*R1*.gz)
 	reverse=$(readlink -f $inputDir/$sample\_*R2*.gz)
 	java -classpath $trimJar org.usadellab.trimmomatic.TrimmomaticPE \
-		-threads 2 \
+		-threads 8 \
 		-phred33 \
 		$forward \
 		$reverse \
@@ -37,7 +37,7 @@ do
 		$outputDir/$sample\_R1_notpaired_clean.fastq \
 		$outputDir/$sample\_R2_paired_clean.fastq \
 		$outputDir/$sample\_R2_notpaired_clean.fastq \
-		ILLUMINACLIP:$adapters:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+		ILLUMINACLIP:$adapters:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36 
 	
 	# clean up singleton files
 	rm $outputDir/$sample\_R1_notpaired_clean.fastq 

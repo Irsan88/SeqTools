@@ -471,7 +471,6 @@ rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,minmaxCol
   if(missing(col)){
     col <- colorRampPalette(rev(brewer.pal(n=11,name=palette)))(length(br)-1)
   }
-	source("~/scripts/heatmap.R")
 	if(missing(column.colors) & missing(row.colors)){
 		h <- heatmap.3(
 			x = x,
@@ -850,7 +849,7 @@ cghSquareHeatmap <- function(x){
   return(p)
 }
 
-plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThreshold,dilutionPercentage=0.1,chrList,sampleList,startMin,endMax){
+plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThreshold,dilutionPercentage=0.1,chrList,sampleList,startMin,endMax,pointSize=1,ploidy=F){
   # make sure lrr is a data frame with chr, pos, lrrSample1, lrrSample2, lrrSample3
   colnames(lrr)[1:2] <- c("chrom","pos")
   samples <- colnames(lrr)[3:ncol(lrr)]
@@ -880,8 +879,15 @@ plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThresh
   # provided order in the lrr data frame
   lrr$ID <- factor(lrr$ID,levels=samples)
   require(ggplot2)
+  # convert to ploidy of requested
+  if(ploidy==T){
+    lrr$seg.mean <- 2*2^(lrr$seg.mean)
+    if(!missing(segments)){
+    	segments$seg.mean <- 2*2^(segments$seg.mean)
+    }
+  }
   p <- ggplot(lrr) +
-    geom_point(aes(x=pos,y=seg.mean)) +
+    geom_point(aes(x=pos,y=seg.mean),size=pointSize) +
     facet_grid(ID ~ chrom,space="free_x",scales="free_x")
   if(!missing(segments)){
     # first make sure the samples are in the right order

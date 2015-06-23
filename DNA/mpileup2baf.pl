@@ -23,7 +23,13 @@ while (<>) {
 	my $num_ref = 0;
 	while ($calls =~ /[,.]/g) { $num_ref++ }
 	my $num_var = $num_reads - $num_ref;
-	my $varAlleleFreq = ($num_var/$num_reads)*100;
+	my $varAlleleFreq;
+	if($num_reads == 0){
+		$varAlleleFreq = "NA";
+	}
+	else {
+		$varAlleleFreq = ($num_var/$num_reads)*100;
+	}	
 	print("$chr\t$start\t$end\t$num_reads\t$varAlleleFreq\n");
 }
 

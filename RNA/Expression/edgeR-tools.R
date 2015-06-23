@@ -85,7 +85,7 @@ anovaLikeEdgeR <- function(y,model="group",normalization="TMM",BCV){
 }
 
 # description: inspect counts for a gene per sample
-plotGenes <- function(y,scales="free_y",base=12){
+plotGenes <- function(y,scales="free_y",base=12,minThreshold){
 	require(ggplot2)
 	require(reshape)
   order <- rownames(y)
@@ -98,6 +98,9 @@ plotGenes <- function(y,scales="free_y",base=12){
     x$symbol <- y$genes[as.character(x$gene),2]
   } else{
     x$symbol <- ""
+  }
+  if(!missing(minThreshold)){
+    x$logCPM[x$logCPM < minThreshold] <- minThreshold
   }
 	plot <- ggplot(x) + 
 		geom_jitter(aes(x=group,y=logCPM,color=group),position=position_jitter(width=0.2)) +
