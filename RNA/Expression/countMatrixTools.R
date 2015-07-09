@@ -19,7 +19,7 @@ removeLowExpressionGenes <- function(x,percentageSamples=0.8,countThreshold=10){
 # Define clustering functions
 clustAverage <- function(x) hclust(x, method="average") 
 clustComplete <- function(x) hclust(x,method="complete")
-clustWard <- function(x) hclust(x,method="ward.D")
+clustWard <- function(x) hclust(x,method="ward.D2")
 distPearson <- function(x) as.dist(1-cor(t(x), method="pearson"))
 distEuclidean <- function(x) dist(x,method = 'euclidean')
 distMax <- function(x) dist(x,method = 'maximum')
