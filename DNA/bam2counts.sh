@@ -31,7 +31,7 @@ sort-bed - | \
 # count the amount of mapped reads
 # overlapping with the features in the
 # provided windows bed-file
-bedmap --count $windows - > $name.count
+bedmap --count $windows -
 
 
 
