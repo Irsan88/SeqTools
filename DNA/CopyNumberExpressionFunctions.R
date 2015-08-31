@@ -463,7 +463,7 @@ distMinkowski <- function(x) dist(x,method = 'minkowski')
 # colors for heatmaps
 blueRedCols <- colorRampPalette(c("blue3","blue2","blue1","blue","white","red","red1","red2","red3"))(100)
 
-rna.clustering <- function(x,scale="row",hc=clustWard,dist=distPearson,minmaxCol=2,palette="RdBu",col,column.colors,row.colors,labRow=F,...){
+rna.clustering <- function(x,scale="row",hc=clustComplete,dist=distPearson,minmaxCol=2,palette="RdBu",col,column.colors,row.colors,labRow=F,...){
 	require(affy)
 	require(RColorBrewer)
 	require(gplots)
