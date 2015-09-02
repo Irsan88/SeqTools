@@ -944,3 +944,51 @@ copyNumberFrequencyPlot <- function(calls,featureData,groups=NULL){
   }
   return(x)
 }
+
+plotDNAcopySegmentsAll <- function(x,outputDir="segmented-plots",width=15,height=5,ylim,...){
+  stopifnot(class(x)=="DNAcopy")
+  require(DNAcopy)
+  require(Cairo)
+  if(missing(ylim)){
+    max <- ceiling(max(abs(x$output$seg.mean)))
+    if(max > 8){
+      max <- 8
+    }
+    ylim <- c(-1*max,max)
+  }
+  # retrieve sample anc chr names
+  samples <- unique(x$output$ID)
+  chromosomes <- unique(x$output$chrom)
+  # create output dir
+  dir.create(path = file.path(outputDir))
+  # export IGV file
+  write.table(x$output,file=file.path(outputDir,"segments.seg"),row.names=F,col.names=T,quote=F,sep="\t")
+  # save segmented DNAcopy object
+  save(x,file=file.path(outputDir,"segments.RData"))
+  for(currentSample in samples){
+    print(currentSample)
+    # create dir for each sample
+    sampleDirPath <- file.path(outputDir,currentSample)
+    dir.create(sampleDirPath)
+    # grab current sample from data
+    currentData <- subset(x,samplelist = currentSample)
+    # define file name
+    wholeGenomeFile <- file.path(sampleDirPath,"whole-genome.pdf")
+    # render graphics for whole genome
+    CairoPDF(file=wholeGenomeFile,width,height)
+    plot(currentData,altCol=T,ylim=ylim,...)
+    dev.off()
+    # plot each chr
+    for(currentChr in chromosomes){
+      # define file name
+      basename <- paste(currentChr,".pdf",sep="")
+      chrFile <- file.path(sampleDirPath,basename)
+      # grab current chr from data
+      currentData <- subset(x,samplelist = currentSample,chromlist = currentChr)
+      # render graphics for whole genome
+      CairoPDF(file=chrFile,width,height)
+      plot(currentData,altcol=F,ylim=ylim,...)
+      dev.off()
+    }
+  }
+}
