@@ -85,7 +85,7 @@ anovaLikeEdgeR <- function(y,model="group",normalization="TMM",BCV){
 }
 
 # description: inspect counts for a gene per sample
-plotGenes <- function(y,scales="free_y",base=12,minThreshold){
+plotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn){
 	require(ggplot2)
 	require(reshape)
   order <- rownames(y)
@@ -94,8 +94,8 @@ plotGenes <- function(y,scales="free_y",base=12,minThreshold){
 	colnames(x) <- c("gene","sample","logCPM")
   x$gene <- factor(x$gene,levels=order)
 	x$group <- y$samples[as.character(x$sample),"group"]
-  if(!is.null(y$genes)){
-    x$symbol <- y$genes[as.character(x$gene),2]
+  if(!missing(extraIdColumn)){
+    x$symbol <- y$genes[as.character(x$gene),extraIdColumn]
   } else{
     x$symbol <- ""
   }
