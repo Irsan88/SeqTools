@@ -94,7 +94,7 @@ plotGenes <- function(y,scales="free_y",base=12,minThreshold){
 	colnames(x) <- c("gene","sample","logCPM")
   x$gene <- factor(x$gene,levels=order)
 	x$group <- y$samples[as.character(x$sample),"group"]
-  if(!is.null(dge$genes)){
+  if(!is.null(y$genes)){
     x$symbol <- y$genes[as.character(x$gene),2]
   } else{
     x$symbol <- ""

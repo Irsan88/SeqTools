@@ -849,7 +849,7 @@ cghSquareHeatmap <- function(x){
   return(p)
 }
 
-plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThreshold,dilutionPercentage=0.1,chrList,sampleList,startMin,endMax,pointSize=1,ploidy=F){
+plotCopyNumberSegmentsandPoint <- function(lrr,segments,callThresholds,dilutionPercentage=0.1,chrList,sampleList,startMin,endMax,pointSize=1,pointColor="grey",pointShape=21,ploidy=F,segmentSize=1){
   # make sure lrr is a data frame with chr, pos, lrrSample1, lrrSample2, lrrSample3
   colnames(lrr)[1:2] <- c("chrom","pos")
   samples <- colnames(lrr)[3:ncol(lrr)]
@@ -887,7 +887,7 @@ plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThresh
     }
   }
   p <- ggplot(lrr) +
-    geom_point(aes(x=pos,y=seg.mean),size=pointSize) +
+    geom_point(aes(x=pos,y=seg.mean),size=pointSize,col=pointColor,shape=pointShape) +
     facet_grid(ID ~ chrom,space="free_x",scales="free_x")
   if(!missing(segments)){
     # first make sure the samples are in the right order
@@ -900,9 +900,19 @@ plotCopyNumberSegmentsandPoint <- function(lrr,segments,gainThreshold,lossThresh
     if(!missing(sampleList)){
       segments <- subset(segments,ID %in% sampleList)
     }
-    p <- p + geom_segment(aes(x=loc.start,xend=loc.end,y=seg.mean,yend=seg.mean),col="red",data=segments)
+    if(!missing(callThresholds)){
+      segments$call <- "unchanged"
+      segments$call[segments$seg.mean > callThresholds[1]] <- "gain"
+      segments$call[segments$seg.mean < callThresholds[2]] <- "loss"
+      p <- p + geom_segment(aes(x=loc.start,xend=loc.end,y=seg.mean,yend=seg.mean,col=call),data=segments,size=segmentSize) + 
+        scale_color_manual(values = c("red","blue","black")) + 
+        theme(legend.position="top")
+    }
+    else {
+      p <- p + geom_segment(aes(x=loc.start,xend=loc.end,y=seg.mean,yend=seg.mean),col="red",data=segments,size=segmentSize)
+    }
   }
-  if(!missing(startMin) | !missing(endMax)){
+  if(!missing(startMin) & !missing(endMax)){
     p <- p + coord_cartesian(xlim=c(startMin,endMax))
   }
   return(p)
