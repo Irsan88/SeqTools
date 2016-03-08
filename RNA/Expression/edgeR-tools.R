@@ -85,7 +85,7 @@ anovaLikeEdgeR <- function(y,model="group",normalization="TMM",BCV){
 }
 
 # description: inspect counts for a gene per sample
-plotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn){
+plotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn,numberColumns){
 	require(ggplot2)
 	require(reshape2)
   order <- rownames(y)
@@ -108,5 +108,67 @@ plotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn){
 		facet_wrap(~gene+symbol,scales=scales) +
     theme_gray(base_size=base) + 
     theme(legend.position="top")
+  if(!missing(numberColumns)){
+    plot <- plot + facet_wrap(~gene+symbol,scales=scales,ncol=numberColumns)
+  }
 	return(plot)
+}
+
+# description: inspect counts for a gene per sample
+jitterPlotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn,numberColumns){
+  require(ggplot2)
+  require(reshape2)
+  order <- rownames(y)
+  x <- cpm(y,log=T,normalized.lib.sizes=T)
+  x <- melt(x)
+  colnames(x) <- c("gene","sample","logCPM")
+  x$gene <- factor(x$gene,levels=order)
+  x$group <- y$samples[as.character(x$sample),"group"]
+  if(!missing(extraIdColumn)){
+    x$symbol <- y$genes[as.character(x$gene),extraIdColumn]
+  } else{
+    x$symbol <- ""
+  }
+  if(!missing(minThreshold)){
+    x$logCPM[x$logCPM < minThreshold] <- minThreshold
+  }
+  plot <- ggplot(x) + 
+    geom_jitter(aes(x=group,y=logCPM,color=group),position=position_jitter(width=0.2)) +
+    scale_color_brewer(type="qual",palette="Set1") +
+    facet_wrap(~gene+symbol,scales=scales) +
+    theme_gray(base_size=base) + 
+    theme(legend.position="top")
+  if(!missing(numberColumns)){
+    plot <- plot + facet_wrap(~gene+symbol,scales=scales,ncol=numberColumns)
+  }
+  return(plot)
+}
+
+dotPlotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn,numberColumns){
+  require(ggplot2)
+  require(reshape2)
+  order <- rownames(y)
+  x <- cpm(y,log=T,normalized.lib.sizes=T)
+  x <- melt(x)
+  colnames(x) <- c("gene","sample","logCPM")
+  x$gene <- factor(x$gene,levels=order)
+  x$group <- y$samples[as.character(x$sample),"group"]
+  if(!missing(extraIdColumn)){
+    x$symbol <- y$genes[as.character(x$gene),extraIdColumn]
+  } else{
+    x$symbol <- ""
+  }
+  if(!missing(minThreshold)){
+    x$logCPM[x$logCPM < minThreshold] <- minThreshold
+  }
+  plot <- ggplot(x) + 
+    geom_dotplot(aes(x=group,y=logCPM,fill=group),binaxis = "y",stackdir="center") +
+    scale_fill_brewer(type="qual",palette="Set1") +
+    facet_wrap(~gene+symbol,scales=scales) +
+    theme_gray(base_size=base) + 
+    theme(legend.position="top")
+  if(!missing(numberColumns)){
+    plot <- plot + facet_wrap(~gene+symbol,scales=scales,ncol=numberColumns)
+  }
+  return(plot)
 }
