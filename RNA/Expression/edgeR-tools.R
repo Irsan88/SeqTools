@@ -105,7 +105,7 @@ plotGenes <- function(y,scales="free_y",base=12,minThreshold,extraIdColumn,numbe
 	plot <- ggplot(x) + 
 		geom_jitter(aes(x=group,y=logCPM,color=group),position=position_jitter(width=0.2)) +
 		scale_color_brewer(type="qual",palette="Set1") +
-		facet_wrap(~gene+symbol,scales=scales) +
+		facet_wrap(~gene,scales=scales) +
     theme_gray(base_size=base) + 
     theme(legend.position="top")
   if(!missing(numberColumns)){
