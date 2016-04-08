@@ -55,6 +55,14 @@ getUniqueSamplesFromSegments <- function(segments){
   return(uniqueSamples)
 }
 
+makeRowNamesSegments <- function(segments){
+  stopifnot("ID" %in% colnames(segments))
+  segments <- segments[order(segments$ID),]
+  idx <- sequence(rle(segments$ID)$lengths)
+  rownames(segments) <- paste(as.character(segments$ID),idx,sep = ".")
+  return(segments)
+}
+
 validateSegmentFormat <- function(segments){
   print("To be implemented. Better: define segments object")
 }
@@ -164,7 +172,7 @@ getSegmentStats <- function(segments){
   segmentAmplitudes <- segments$seg.mean
   segmentLength <- log10((segments$loc.end - segments$loc.start) + 0.1)
   # get stats
-  numberSegments <- nrow(segments)
+  numberSegments <- log10(nrow(segments))
   numberUniqueChroms <- length(unique(segments$chrom))
   maxAmplitude <- max(segmentAmplitudes)
   minAmplitude <- min(segmentAmplitudes)
