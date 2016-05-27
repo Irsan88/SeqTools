@@ -572,7 +572,7 @@ numericToColors <- function(x,na.color="grey"){
 }
 
 # jitter plot of individual genes
-plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL){
+plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL,jitterWidth=0.1){
 	require(ggplot2)
 	require(reshape)
 	require(affy)
@@ -591,7 +591,7 @@ plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL){
 	}
 	d$symbol <- fData(eset)[as.character(d$probe),2]
 	plot <- ggplot(d) + 
-		geom_jitter(aes(x=group,y=expression,color=group),position=position_jitter(width=0.1)) + 
+		geom_jitter(aes(x=group,y=expression,color=group),position=position_jitter(width=jitterWidth)) + 
 		facet_wrap(~probe+symbol,scales=scales,nrow=rows) +
 		scale_color_brewer(type="qual",palette="Set1") +
 		theme(legend.position="none")
