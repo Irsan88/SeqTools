@@ -178,18 +178,13 @@ getSegmentStats <- function(segments){
   minAmplitude <- min(segmentAmplitudes)
   meanAmplitude <- mean(segmentAmplitudes)
   medianAmplitude <- median(segmentAmplitudes)
-  
   maxLength <- max(segmentLength)
   minLenght <- min(segmentLength)
   meanLength <- mean(segmentLength)
   medianLenght <- median(segmentLength)
-  if(nrow(segments) > 1){
-    sdAmplitude <- sd(segmentAmplitudes)
-    sdLength <- sd(segmentLength)
-  } else {
-    sdAmplitude <- 0
-    sdLength <- 0
-  }
+  sdAmplitude <- sd(segmentAmplitudes)
+  sdLength <- sd(segmentLength)
+  # merge
   results <- c(
     numberSegments,
     numberUniqueChroms,
