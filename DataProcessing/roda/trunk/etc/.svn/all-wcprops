@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/roda/!svn/ver/48/trunk/etc
+END
+exome.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/47/trunk/etc/exome.sh
+END
+contis.sh
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/roda/!svn/ver/43/trunk/etc/contis.sh
+END
+default.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/48/trunk/etc/default.sh
+END
+small.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/38/trunk/etc/small.sh
+END
+nipd.sh
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/roda/!svn/ver/45/trunk/etc/nipd.sh
+END

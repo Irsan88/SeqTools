@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/roda/!svn/ver/50/trunk/bin/scripts
+END
+mass_stat_v3.sh
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/roda/!svn/ver/44/trunk/bin/scripts/mass_stat_v3.sh
+END
+plotHomHetRegions.py
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/roda/!svn/ver/45/trunk/bin/scripts/plotHomHetRegions.py
+END
+mass_stat_v6.sh
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/roda/!svn/ver/45/trunk/bin/scripts/mass_stat_v6.sh
+END
+mass_stat_for_exomes_v1.sh
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/roda/!svn/ver/44/trunk/bin/scripts/mass_stat_for_exomes_v1.sh
+END
+getMicroarrayPositions.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/roda/!svn/ver/44/trunk/bin/scripts/getMicroarrayPositions.py
+END
+mass_stat_for_exomes_v6.sh
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/roda/!svn/ver/49/trunk/bin/scripts/mass_stat_for_exomes_v6.sh
+END
+wc_makeReport.py
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/roda/!svn/ver/45/trunk/bin/scripts/wc_makeReport.py
+END
+new_qc_v3.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/roda/!svn/ver/44/trunk/bin/scripts/new_qc_v3.py
+END
+runSamtoolsMpileup.sh
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/roda/!svn/ver/44/trunk/bin/scripts/runSamtoolsMpileup.sh
+END
+snpConcordance_filter.py
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/roda/!svn/ver/44/trunk/bin/scripts/snpConcordance_filter.py
+END
+calcTowers.py
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/roda/!svn/ver/45/trunk/bin/scripts/calcTowers.py
+END
+calc_AF_VCF.py
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/roda/!svn/ver/44/trunk/bin/scripts/calc_AF_VCF.py
+END
+new_qc_v6.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/roda/!svn/ver/50/trunk/bin/scripts/new_qc_v6.py
+END
+wc_printResults.py
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/roda/!svn/ver/45/trunk/bin/scripts/wc_printResults.py
+END

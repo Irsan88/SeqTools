@@ -1,0 +1,8 @@
+
+
+export RODA_ID=ex
+export ARG_BT_DEPTH=true
+#export FILE_TARGETAREAS=$DIR_DATA/bed/SeqCap_EZ_Exome_v3_capture_150bpExtra_minWhiteLines.bed
+#export FILE_TARGETAREAS=$DIR_DATA/bed/SeqCap_EZ_Exome_v3_capture_minWhiteLines.bed
+export FILE_EXONBED=$DIR_DATA/bed/SeqCap_EZ_Exome_v3_capture_minWhiteLines_sorted.bed
+export FILE_TARGETAREAS=/illumina/diagnostics/lib/bed/SeqCap_EZ_Exome_v3_capture_450bpExtra_130716_sortmerge.bed

@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/roda/!svn/ver/51/tags/2.0/bin
+END
+pt_fmi.sh
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/roda/!svn/ver/51/tags/2.0/bin/pt_fmi.sh
+END
+gatk_ir.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_ir.sh
+END
+bwa_spe.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/bwa_spe.sh
+END
+gatk_vf.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_vf.sh
+END
+gatk_ug.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_ug.sh
+END
+bwa_sse.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/bwa_sse.sh
+END
+gatk_pr.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_pr.sh
+END
+rd_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/rd_qc.sh
+END
+pt_ss.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/pt_ss.sh
+END
+av_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/av_cs.sh
+END
+wc_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/wc_qc.sh
+END
+gatk_rtc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_rtc.sh
+END
+wc_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/wc_cs.sh
+END
+rd_gt.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/rd_gt.sh
+END
+gatk_hc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_hc.sh
+END
+pt_md.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/bin/pt_md.sh
+END
+bwa_aln.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/bwa_aln.sh
+END
+gatk_br.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/bin/gatk_br.sh
+END

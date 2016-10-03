@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/roda/!svn/ver/51/tags/2.0
+END
+roda_mult.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/51/tags/2.0/roda_mult.sh
+END
+roda_single.sh
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/roda_single.sh
+END
+roda_gui.py
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/51/tags/2.0/roda_gui.py
+END
+validate.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/51/tags/2.0/validate.sh
+END
+roda_gui.glade
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/roda/!svn/ver/51/tags/2.0/roda_gui.glade
+END

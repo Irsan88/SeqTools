@@ -1,0 +1,11 @@
+#$ -pe singlenode 4
+
+$SCRIPT_HTSEQ \
+	--mode=union \
+	--stranded=$STRAND_DIRECTION \
+	--minaqual=35 \
+	--type=$FEATURE_TYPE \
+	--idattr=gene_id \
+	$FILE_OUTPUT\.sam \
+	$ENSEMBL_GTF_HG19 > $FILE_OUTPUT\.htSeqCounts_ensemblID.ssv
+

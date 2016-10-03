@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/roda/!svn/ver/52/branches/irna/bin
+END
+gatk_br.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_br.sh
+END
+pt_fmi.sh
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/roda/!svn/ver/52/branches/irna/bin/pt_fmi.sh
+END
+gatk_ir.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_ir.sh
+END
+bwa_spe.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/bwa_spe.sh
+END
+gatk_vf.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_vf.sh
+END
+gatk_ug.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_ug.sh
+END
+bwa_sse.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/bwa_sse.sh
+END
+gatk_pr.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_pr.sh
+END
+rd_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/rd_qc.sh
+END
+pt_ss.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/pt_ss.sh
+END
+av_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/av_cs.sh
+END
+wc_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/wc_qc.sh
+END
+gatk_rtc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_rtc.sh
+END
+wc_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/wc_cs.sh
+END
+rd_gt.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/rd_gt.sh
+END
+gatk_hc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/gatk_hc.sh
+END
+pt_md.sh
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/roda/!svn/ver/52/branches/irna/bin/pt_md.sh
+END
+bwa_aln.sh
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/roda/!svn/ver/52/branches/irna/bin/bwa_aln.sh
+END

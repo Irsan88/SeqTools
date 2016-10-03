@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/roda/!svn/ver/50/trunk/bin
+END
+gatk_br.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/49/trunk/bin/gatk_br.sh
+END
+pt_fmi.sh
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/roda/!svn/ver/20/trunk/bin/pt_fmi.sh
+END
+gatk_ir.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/27/trunk/bin/gatk_ir.sh
+END
+bwa_spe.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/31/trunk/bin/bwa_spe.sh
+END
+gatk_vf.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/45/trunk/bin/gatk_vf.sh
+END
+gatk_ug.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/37/trunk/bin/gatk_ug.sh
+END
+bwa_sse.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/45/trunk/bin/bwa_sse.sh
+END
+gatk_pr.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/42/trunk/bin/gatk_pr.sh
+END
+rd_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/45/trunk/bin/rd_qc.sh
+END
+pt_ss.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/43/trunk/bin/pt_ss.sh
+END
+av_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/45/trunk/bin/av_cs.sh
+END
+wc_qc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/47/trunk/bin/wc_qc.sh
+END
+gatk_rtc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/roda/!svn/ver/27/trunk/bin/gatk_rtc.sh
+END
+wc_cs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/45/trunk/bin/wc_cs.sh
+END
+rd_gt.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/45/trunk/bin/rd_gt.sh
+END
+gatk_hc.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/48/trunk/bin/gatk_hc.sh
+END
+pt_md.sh
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/roda/!svn/ver/45/trunk/bin/pt_md.sh
+END
+bwa_aln.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/roda/!svn/ver/45/trunk/bin/bwa_aln.sh
+END

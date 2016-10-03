@@ -1,0 +1,33 @@
+export RODA_ID=tru_str
+export RODA_PIPELINE=dge
+
+# scripts for RNA-seq pipeline
+export SCRIPT_STAR=$DIR_SCRIPTS/STAR_2.3.0e.Linux_x86_64_static/STAR
+export SCRIPT_HTSEQ=$DIR_SCRIPTS/HTSeq-0.6.1/scripts/htseq-count
+export SCRIPT_PT_ADDREADGROUP=$SCRIPT_PT/AddOrReplaceReadGroups.jar
+export SCRIPT_JAVA=$DIR_SCRIPTS/jre1.7.0_25/bin/java
+
+# data files for RNA-seq
+export INDEX_STAR_HG19=$DIR_DATA/reference-genomes/hg19/STAR_2.3.0e/STAR-hg19-ensembl75/
+export ENSEMBL_GTF_HG19=$DIR_DATA/gene-annotation/ensembl-genes-rnaseq/Homo_sapiens.GRCh37.75.onlyCDSCodonUTR.chr1-22XY.gtf
+
+# command line options
+export STRAND_DIRECTION=reverse #yes, no or reverse
+export AMOUNT_MISMATCHES=10
+export CHIM_SEGMENT_MIN=1
+export FEATURE_TYPE=exon
+
+
+# command line arguments for the variant calling part
+export ARG_BT_DEPTH=true
+export FILE_EXONBED=$DIR_DATA/bed/Homo_sapiens.GRCh37.65_v3.bed
+export FILE_TARGETAREAS=$DIR_DATA/bed/Homo_sapiens.GRCh37.65_v3.bed
+
+# Restrict RNAseq variant calling to Ensembl exons
+export ARG_TARGETAREAS="-L $DIR_DATA/bed/Homo_sapiens.GRCh37.65_v3_offset1.bed"
+
+# allow gatk to work with rna-seq reads
+export GATK_RNASEQ="-U ALLOW_N_CIGAR_READS"
+
+export ARG_CLEANUP=true
+

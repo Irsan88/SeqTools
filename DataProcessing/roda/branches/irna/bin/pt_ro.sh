@@ -1,0 +1,15 @@
+#$ -pe singlenode 2
+
+
+$SCRIPT_JAVA -Xmx4g -Djava.io.tmpdir=/tmp \
+	-jar $SCRIPT_PT_REORDER \
+	INPUT=$FILE_OUTPUT.sam \
+	OUTPUT=$FILE_OUTPUT.reordered.bam \
+	REFERENCE=$FILE_REFERENCE
+	VALIDATION_STRINGENCY=LENIENT \
+	ALLOW_INCOMPLETE_DICT_CONCORDANCE=true \
+	TMP_DIR=$DIR_OUTPUT
+
+if $ARG_CLEANUP; then
+	rm $FILE_OUTPUT.sa*
+fi

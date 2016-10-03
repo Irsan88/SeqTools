@@ -1,0 +1,7 @@
+
+
+$SAMTOOLS rmdup -s $FILE_OUTPUT.sort.bam - | \
+	$SAMTOOLS view - | \
+	$SCRIPT_PYTHON $SCRIPT_WC_CONSAM $ARG_WC_BINSIZE $ARG_WC_N $ARG_WC_T \
+	> $FILE_OUTPUT.pickle
+
