@@ -284,3 +284,56 @@ getFeaturesPerSegmentedDiff <- function(segmentedDiff,originalSegments){
   return(featureMatrixPerSegmentedDiff)
 }
 
+regionIdsToSampleIds <- function(regionIds){
+  idPartsList <- strsplit(regionIds,split = "\\.")
+  sampleIds <- sapply(
+    idPartsList,
+    function(x){
+      paste(
+        x[1:(length(x)-1)],
+        collapse = "\\."
+      )
+    })
+  return(sampleIds)
+}
+
+ggSegmentationSteps <- function(segments,yMinMax,scaleFreedom="free_x",spaceFreedom="free_x",...){
+  require(ggplot2)
+  require(grid)
+  if(missing(yMinMax)){
+    yMinMax <- range(segments$seg.mean) * 1.1
+  }
+  # reduce outliers
+  segments[segments$seg.mean > max(yMinMax),"seg.mean"] <- max(yMinMax)
+  segments[segments$seg.mean < min(yMinMax),"seg.mean"] <- min(yMinMax)
+  # make sure the first and last step is in the plot by
+  # duplicating that segment record and +- 1 base pair
+  for(currentSample in unique(segments$ID)){
+    for(currentChr in unique(segments$chrom)){
+      currentSegments <- subset(segments,ID==currentSample & chrom==currentChr)
+      # make sure its ordered
+      currentSegments <- currentSegments[order(currentSegments$chrom,currentSegments$loc.start,currentSegments$loc.end),]
+      extraStartSegment <- currentSegments[1,]
+      extraStartSegment$loc.start <- extraStartSegment$loc.start - 1
+      extraEndSegment <- currentSegments[nrow(currentSegments),]
+      extraEndSegment$loc.start <- extraEndSegment$loc.end + 1 # because the plotting is based on loc.start!
+      segments <- rbind(segments,extraStartSegment,extraEndSegment)
+    }
+  }
+  # do the plotting
+  p <- ggplot(segments) + 
+    geom_step(aes(x=loc.start,y=seg.mean),direction = "hv") + 
+    facet_grid(ID ~ chrom,scales = scaleFreedom,space = spaceFreedom) + 
+    labs(x="Genomic position",y="Copy number estimate") +
+    coord_cartesian(ylim = yMinMax) + 
+    theme_bw() + 
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank(),
+      legend.position="none",
+      panel.grid.minor.x = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.margin = unit(0,units = "cm")
+    )
+  return(p)
+}

@@ -527,34 +527,50 @@ rna.clustering <- function(x,scale="row",hc=clustComplete,dist=distPearson,minma
 }
 
 
-makeColSideColors <- function(x,colors){
+makeColSideColors <- function(x){
 	require(affy)
 	col <- data.frame(row.names=rownames(x))
 	for(column in colnames(x)){
 		if(is.numeric(x[,column])){
 			col[,column] <- numericToColors(x[,column])
 		} else {
-			col[,column] <- categoriesToColors(x[,column],colors=colors)		
+			col[,column] <- categoriesToColors(x[,column])		
 		}
 	}
 	return(as.matrix(col))
 }
 
-categoriesToColors <- function(x,colors,palette="Set1"){
-	if(is.numeric(x)){ 
+categoriesToColors <- function(x){
+  require(RColorBrewer)
+  if(is.numeric(x)){ 
 		stop("You should provide non-numeric vector")
 	}
 	# determine the amount of categories
-	n <- length(unique(x))
-	if(n<3){n<-3}
-	require(RColorBrewer)
-  if(missing(colors)){
-    colors <- brewer.pal(n,name=palette)[factor(x)]
-  } else {
-    colors <- colors[factor(x)]
-  }
-	colors[which(is.na(colors))] <- "grey"
-	return(colors)
+	numberColorsRequired <- length(unique(x))
+	# number of individuals
+	n <- length(x)
+	# make default returnColors
+	returnColors <- "not set yet"
+	if(numberColorsRequired==1){
+	  returnColors <- rep("red",n)
+	}
+	if(numberColorsRequired==2){
+	  returnColors <- c("red","black")[factor(x)]
+	}
+	if(numberColorsRequired > 2 & numberColorsRequired < 10){
+	  colorSet <- brewer.pal(n = numberColorsRequired,name = "Set1")
+	  returnColors <- colorSet[factor(x)]
+	}
+	if(numberColorsRequired > 9 & numberColorsRequired < 13){
+	  colorSet <- brewer.pal(n = numberColorsRequired,name = "Set3")
+	  returnColors <- colorSet[factor(x)]
+	}
+	if(numberColorsRequired > 12){
+	  colorSet <- colorRampPalette(colors = brewer.pal(n = 9,name = "Set1"))(numberColorsRequired)
+	  returnColors <- colorSet[factor(x)]
+	}
+	returnColors[which(is.na(returnColors))] <- "grey"
+	return(returnColors)
 }
 
 numericToColors <- function(x,na.color="grey"){
@@ -589,10 +605,9 @@ plotProbes <- function(eset,group=NULL,scales="free_y",rows=NULL,jitterWidth=0.1
 	else {
 		d$group <- pData(eset)[as.character(d$sample),group]
 	}
-	d$symbol <- fData(eset)[as.character(d$probe),2]
 	plot <- ggplot(d) + 
 		geom_jitter(aes(x=group,y=expression,color=group),position=position_jitter(width=jitterWidth)) + 
-		facet_wrap(~probe+symbol,scales=scales,nrow=rows) +
+		facet_wrap(~probe,scales=scales,nrow=rows) +
 		scale_color_brewer(type="qual",palette="Set1") +
 		theme(legend.position="none")
 	return(plot)
