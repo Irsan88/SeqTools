@@ -324,7 +324,7 @@ ggSegmentationSteps <- function(segments,yMinMax,scaleFreedom="free_x",spaceFree
   p <- ggplot(segments) + 
     geom_step(aes(x=loc.start,y=seg.mean),direction = "hv") + 
     facet_grid(ID ~ chrom,scales = scaleFreedom,space = spaceFreedom) + 
-    labs(x="Genomic position",y="Copy number estimate") +
+    labs(x="Genomic position",y="Log2-ratio") +
     coord_cartesian(ylim = yMinMax) + 
     theme_bw() + 
     theme(
